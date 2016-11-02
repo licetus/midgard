@@ -1,11 +1,16 @@
 var Map = function() {
-    var empty = 0, tic = 1, tac = 4, draw = 16
+    this.empty = 0
+	this.tic = 1
+	this.tac = 4
+	this.draw = 16
+
     var map = new Array(9)
     for (i = 0; i < 9; i++) {
         map[i] = new Array(9)
     }
     var blockStatus = new Array(9)
     var activeBlock = -1
+	
         // return status of given location(i, j) | status: 0 - empty, 1 - tic, 4 - tac
     this.getItemStatus = function(block, item) {
         return map[block][item]
@@ -143,8 +148,6 @@ var Map = function() {
         }
     }
 
-
-
     // render chess map
     this.render = function() {
 
@@ -152,7 +155,5 @@ var Map = function() {
 
 }
 
-
-var map = new Map()
-map.reset()
-map.play(0, 0, 4)
+var module = module || {}
+if (module) { module.exports = Map }
