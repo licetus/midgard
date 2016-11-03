@@ -9,13 +9,9 @@ export default class Map {
 		this.blockStatus = new Array(9)
 		for (let i = 0; i < 9; i++) {
 			this.map[i] = new Array(9)
-			this.blockStatus[i] = Map.empty
-			for (let j = 0; j < 9; j++) {
-				this.map[i][j] = Map.empty
-			}
 		}
-
 		this.activeBlock = -1
+		this.reset()
 	}
 
 	getItemStatus(block, item) {
@@ -151,6 +147,10 @@ export default class Map {
 			this.activeBlock = this.blockStatus[item] === 0 ? item : -1
 			this.updateStatus()
 		}
+	}
+
+	checkStep(block, item, status) {
+
 	}
 
 	// render chess this.map
