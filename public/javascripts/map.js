@@ -3,7 +3,7 @@ export default class Map {
 	static tic = 1
 	static tac = 4
 	static draw = 16
-
+	static allBlock = -1
 	constructor() {
 		this.map = new Array(9)
 		this.blockStatus = new Array(9)
@@ -15,7 +15,7 @@ export default class Map {
 			}
 		}
 
-		this.activeBlock = -1
+		this.activeBlock = Map.allBlock
 	}
 
 	getItemStatus(block, item) {
@@ -39,12 +39,12 @@ export default class Map {
 
 	// returns a bool value if given location is available
 	isItemAvailable(block, item) {
-		return this.getItemStatus(block, item) === 0 ? true : false
+		return this.getItemStatus(block, item) === Map.empty ? true : false
 	}
 
 	// returns a bool value if given block is available
 	isBlockAvailable(block) {
-		return this.getBlockStatus(block) === 0 ? true : false
+		return this.getBlockStatus(block) === Map.empty ? true : false
 	}
 
 	updateStatus() {
@@ -55,14 +55,17 @@ export default class Map {
 	getActiveBlock() {
 		return this.activeBlock
 	}
+	setActiveBlock(block) {
+		this.activeBlock = block
+	}
 
 	count(count) {
 		if (count === 3) {
-			return 1
+			return Map.tic
 		} else if (count === 12) {
-			return 4
+			return Map.tac
 		} else {
-			return 0
+			return Map.empty
 		}
 	}
 
@@ -72,11 +75,12 @@ export default class Map {
 			for (let j = 0; j < 3; j++) {
 				count += arr[i + j]
 			}
-			if (this.count(count) !== 0) {
-				return this.count(count)
+			let thisCount = this.count(count)
+			if (thisCount !== Map.empty) {
+				return thisCount
 			}
 		}
-		return 0
+		return Map.empty
 	}
 
 	columnCheck(arr) {
@@ -85,11 +89,12 @@ export default class Map {
 			for (let j = 0; j < 9; j += 3) {
 				count += arr[i + j]
 			}
-			if (this.count(count) !== 0) {
-				return this.count(count)
+			let thisCount = this.count(count)
+			if (thisCount !== Map.empty) {
+				return thisCount
 			}
 		}
-		return 0
+		return Map.empty
 	}
 
 	diagonalCheck(arr) {
@@ -97,31 +102,40 @@ export default class Map {
 		for (let i = 0; i < 12; i += 4) {
 			count += arr[i]
 		}
-		if (this.count(count) !== 0) {
-			return this.count(count)
-		} else {
-			count = 0
-			for (let i = 2; i < 8; i += 2) {
-				count += arr[i]
-			}
-			if (this.count(count) !== 0) {
-				return this.count(count)
-			} else {
-				return 0
-			}
+		let thisCount = this.count(count)
+		if (thisCount !== Map.empty) {
+			return thisCount
 		}
+
+		count = 0
+		for (let i = 2; i < 8; i += 2) {
+			count += arr[i]
+		}
+		thisCount = this.count(count)
+		if (thisCount !== Map.empty) {
+			return thisCount
+		}
+		return Map.empty
 	}
 
 	// returns a int value after checking block i: status: 0 - not finished, 1 - tic win, 2 - tac win
 	checkBlock(block) {
-		if (this.rowCheck(this.map[block]) !== 0) {
-			return this.rowCheck(this.map[block])
-		} else if (this.columnCheck(this.map[block]) !== 0) {
-			return this.columnCheck(this.map[block])
-		} else if (this.diagonalCheck(this.map[block]) !== 0) {
-			return this.diagonalCheck(this.map[block])
+		let thisRowCheck = this.rowCheck(this.map[block])
+		let thisColumnCheck = this.columnCheck(this.map[block])
+		let thisDiagonalCheck = this.diagonalCheck(this.map[block])
+		if (thisRowCheck !== Map.empty) {
+			return thisRowCheck
+		} else if (thisColumnCheck !== Map.empty) {
+			return thisColumnCheck
+		} else if (thisDiagonalCheck !== Map.empty) {
+			return thisDiagonalCheck
 		} else {
-			return 0
+			for (let i = 0; i < 9; i++) {
+				if (this.getItemStatus(block, i) === Map.empty) {
+					return Map.empty
+				}
+			}
+			return Map.draw
 		}
 	}
 
@@ -132,23 +146,26 @@ export default class Map {
 	reset() {
 		for (let i = 0; i < 9; i++) {
 			for (let j = 0; j < 9; j++) {
-				this.map[i][j] = 0
+				this.map[i][j] = Map.empty
 			}
-			this.blockStatus[i] = 0
+			this.blockStatus[i] = Map.empty
 		}
-		this.activeBlock = -1
+		this.setActiveBlock(Map.allBlock)
 	}
 
 	// call this to play a step, will call setItemStatus in this method and set other game state.
 	play(block, item, status) {
 		if (this.isBlockAvailable(block) === false) {
 			console.log('Block is not available')
+		} else if (this.getActiveBlock() !== block && this.getActiveBlock() !== Map.allBlock) {
+			console.log('Block is not active')
 		} else if (this.isItemAvailable(block, item) === false) {
 			console.log('Item is not available')
 		} else {
 			this.setItemStatus(block, item, status)
-			console.log('Block ' + block + ' status is ' + status + ', next active Block is ' + item)
-			this.activeBlock = this.blockStatus[item] === 0 ? item : -1
+			this.setBlockStatus(block, this.checkBlock(block))
+			this.setActiveBlock(this.getBlockStatus(item) === Map.empty ? item : Map.allBlock)
+			console.log('Block: ' + block + ' item: ' + item + ' itemStatus:' + status + ', next active Block is ' + this.getActiveBlock())
 			this.updateStatus()
 		}
 	}

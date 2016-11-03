@@ -93,7 +93,7 @@ describe('Map', function() {
 
 		it('should return Empty for a specific condition', function() {
 			var map = new Map()
-			var arr = [Map.tic, Map.tac, Map.tic, Map.tac, Map.tac, Map.tic, Map.tic, Map.tic, map.empty]
+			var arr = [Map.tic, Map.tac, Map.tic, Map.tac, Map.tac, Map.tic, Map.tic, Map.tic, Map.empty]
 			map.reset()
 			for(var i = 0; i < 9; i++) {
 				map.setItemStatus(0, i, arr[i])
@@ -123,6 +123,7 @@ describe('Map', function() {
 			for(var i = 0; i < 9; i++) {
 				map.setItemStatus(0, i, arr[i])
 			}
+			map.setBlockStatus(0, Map.draw)
 			map.play(3, 0, Map.tac)
 			assert.equal(map.getActiveBlock(), -1)
 		})
