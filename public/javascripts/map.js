@@ -1,164 +1,162 @@
-var Map = function() {
-    var map = new Array(9)
-    for (i = 0; i < 9; i++) {
-        map[i] = new Array(9)
-    }
-    var blockStatus = new Array(9)
-    var activeBlock = -1
+export default class Map {
+	static empty = 0
+	static tic = 1
+	static tac = 4
+	static draw = 16
 
-    //status define
-    this.activeAll = -1
-    this.empty = 0
-    this.tic = 1
-    this.tac = 4
-    this.draw = 16
-    // return status of given location(i, j) | status: 0 - empty, 1 - tic, 4 -
-    this.getItemStatus = function(block, item) {
-        return map[block][item]
-    }
+	constructor() {
+		this.map = new Array(9)
+		this.blockStatus = new Array(9)
+		for (let i = 0; i < 9; i++) {
+			this.map[i] = new Array(9)
+			this.blockStatus[i] = Map.empty
+			for (let j = 0; j < 9; j++) {
+				this.map[i][j] = Map.empty
+			}
+		}
 
-    // change location status of given location(i, j)
-    this.setItemStatus = function(block, item, status) {
-        map[block][item] = status
-    }
+		this.activeBlock = -1
+	}
 
-    // return status of given block | status: 0 - empty, 1 - tic, 4 - tac, 16 - draw
-    this.getBlockStatus = function(block) {
-        return blockStatus[block]
-    }
+	getItemStatus(block, item) {
+		return this.map[block][item]
+	}
 
-    // set status of block
-    this.setBlockStatus = function(block, status) {
-        blockStatus[block] = status
-    }
+	// change location status of given location(i, j)
+	setItemStatus(block, item, status) {
+		this.map[block][item] = status
+	}
 
-    // returns a bool value if given location is available
-    this.isItemAvailable = function(block, item) {
-        return this.getItemStatus(block, item) === 0 ? true : false
-    }
+	// return status of given block | status: 0 - empty, 1 - tic, 4 - tac, 16 - draw
+	getBlockStatus(block) {
+		return this.blockStatus[block]
+	}
 
-    // returns a bool value if given block is available
-    this.isBlockAvailable = function(block) {
-        return this.getBlockStatus(block) === 0 ? true : false
-    }
+	// set status of block
+	setBlockStatus(block, status) {
+		this.blockStatus[block] = status
+	}
 
-    this.updateStatus = function() {
+	// returns a bool value if given location is available
+	isItemAvailable(block, item) {
+		return this.getItemStatus(block, item) === 0 ? true : false
+	}
 
+	// returns a bool value if given block is available
+	isBlockAvailable(block) {
+		return this.getBlockStatus(block) === 0 ? true : false
+	}
 
-    }
+	updateStatus() {
 
-    // returns a int value represent of next step block constraint, returns null means can put next item any other block
-    this.getActiveBlock = function() {
-        return activeBlock
-    }
+	}
 
-    this.count = function(count) {
-        if (count === 3) {
-            return this.tic
-        } else if (count === 12) {
-            return this.tac
-        } else {
-            return this.empty
-        }
-    }
+	// returns a int value represent of next step block constraint, returns null means can put next item any other block
+	getActiveBlock() {
+		return this.activeBlock
+	}
 
-    this.rowCheck = function(arr) {
-        for (var i = 0; i < 9; i += 3) {
-            var count = 0
-            for (var j = 0; j < 3; j++) {
-                count += arr[i + j]
-            }
-            if(var thisCount = this.count(count) !== this.empty) {
-                return thisCount
-            }
-        }
-        return this.empty
-    }
+	count(count) {
+		if (count === 3) {
+			return 1
+		} else if (count === 12) {
+			return 4
+		} else {
+			return 0
+		}
+	}
 
-    this.columnCheck = function(arr) {
-        for (var i = 0; i < 3; i++) {
-            var count = 0
-            for(var j = 0; j < 9; j += 3) {
-                count += arr[i + j]
-            }
-            if(var thisCount = this.count(count) !== this.empty) {
-                return thisCount
-            }
-        }
-        return this.empty
-    }
+	rowCheck(arr) {
+		for (let i = 0; i < 9; i += 3) {
+			let count = 0
+			for (let j = 0; j < 3; j++) {
+				count += arr[i + j]
+			}
+			if (this.count(count) !== 0) {
+				return this.count(count)
+			}
+		}
+		return 0
+	}
 
-    this.diagonalCheck = function(arr) {
-        var count = 0
-        for (i = 0; i < 12; i += 4) {
-            count += arr[i]
-        }
-        if (var thisCount = this.count(count) !== this.empty) {
-            return thisCount
-        } else {
-            count = 0
-            for(i = 2; i < 8; i += 2) {
-                count += arr[i]
-            }
-            if (var thisCount = this.count(count) !== this.empty) {
-                return thisCount
-            } else {
-                return this.empty
-            }
-        }
-    }
+	columnCheck(arr) {
+		for (let i = 0; i < 3; i++) {
+			let count = 0
+			for (let j = 0; j < 9; j += 3) {
+				count += arr[i + j]
+			}
+			if (this.count(count) !== 0) {
+				return this.count(count)
+			}
+		}
+		return 0
+	}
 
-    // returns a int value after checking block i: status: 0 - not finished, 1 - tic win, 2 - tac win
-    this.checkBlock = function(block) {
-        if (var thisRowCheck = this.rowCheck(map[block]) !== this.empty) {
-            return thisRowCheck
-        } else if (var thisColumnCheck = this.columnCheck(map[block]) !== this.empty) {
-            return thisColumnCheck
-        } else if (var thisDiagonalCheck = this.diagonalCheck(map[block]) !== this.empty) {
-            return thisDiagonalCheck
-        } else {
-            return this.empty
-        }
-    }
+	diagonalCheck(arr) {
+		let count = 0
+		for (let i = 0; i < 12; i += 4) {
+			count += arr[i]
+		}
+		if (this.count(count) !== 0) {
+			return this.count(count)
+		} else {
+			count = 0
+			for (let i = 2; i < 8; i += 2) {
+				count += arr[i]
+			}
+			if (this.count(count) !== 0) {
+				return this.count(count)
+			} else {
+				return 0
+			}
+		}
+	}
 
-    // returns a int value after checking entire chess map: status: 0 - not finished, 1 - tic win, 2 - tac win
-    this.check = function() {
+	// returns a int value after checking block i: status: 0 - not finished, 1 - tic win, 2 - tac win
+	checkBlock(block) {
+		if (this.rowCheck(this.map[block]) !== 0) {
+			return this.rowCheck(this.map[block])
+		} else if (this.columnCheck(this.map[block]) !== 0) {
+			return this.columnCheck(this.map[block])
+		} else if (this.diagonalCheck(this.map[block]) !== 0) {
+			return this.diagonalCheck(this.map[block])
+		} else {
+			return 0
+		}
+	}
 
-    }
-    this.reset = function() {
-        for (var i = 0; i < 9; i++) {
-            for (var j = 0; j < 9; j++) {
-                map[i][j] = this.empty
-            }
-            blockStatus[i] = this.empty
-        }
-        activeBlock = this.activeAll
-    }
+	// returns a int value after checking entire chess this.map: status: 0 - not finished, 1 - tic win, 2 - tac win
+	check() {
 
-    // call this to play a step, will call setItemStatus in this method and set other game state.
-    this.play = function(block, item, status) {
-        if (this.isBlockAvailable(block) === false) {
-            console.log('Block ' + block + ' is not available')
-        } else if (activeBlock !== this.activeAll && activeBlock !== block) {
-            console.log('Block ' + block + '  is not active')
-        } else if (this.isItemAvailable(block, item) === false) {
-            console.log('Item ' + item + '  is not available')
-        } else {
-            this.setItemStatus(block, item, status)
-            console.log('Block ' + block + ' status is ' + status + ', next active Block is ' + item)
-            if (this.checkBlock(block) !== this.empty) {
-                this.setBlockStatus(block, this.checkBlock(block))
-            }
-            activeBlock = this.getBlockStatus[item] === this.empty ? item : this.activeAll
-            this.updateStatus()
-        }
-    }
+	}
+	reset() {
+		for (let i = 0; i < 9; i++) {
+			for (let j = 0; j < 9; j++) {
+				this.map[i][j] = 0
+			}
+			this.blockStatus[i] = 0
+		}
+		this.activeBlock = -1
+	}
 
-    // render chess map
-    this.render = function() {
+	// call this to play a step, will call setItemStatus in this method and set other game state.
+	play(block, item, status) {
+		if (this.isBlockAvailable(block) === false) {
+			console.log('Block is not available')
+		} else if (this.isItemAvailable(block, item) === false) {
+			console.log('Item is not available')
+		} else {
+			this.setItemStatus(block, item, status)
+			console.log('Block ' + block + ' status is ' + status + ', next active Block is ' + item)
+			this.activeBlock = this.blockStatus[item] === 0 ? item : -1
+			this.updateStatus()
+		}
+	}
 
-    }
+	// render chess this.map
+	render() {
 
+	}
 }
 
 var module = module || {}
