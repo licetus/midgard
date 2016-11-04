@@ -131,15 +131,15 @@ export default class Map {
 	}
 
 	checkArray(arr) {
-		let thischeckRow = this.checkRow(arr)
-		let thischeckColumn = this.checkColumn(arr)
-		let thischeckDiagonal = this.checkDiagonal(arr)
-		if (thischeckRow !== Map.available) {
-			return thischeckRow
-		} else if (thischeckColumn !== Map.available) {
-			return thischeckColumn
-		} else if (thischeckDiagonal !== Map.available) {
-			return thischeckDiagonal
+		let thisCheckRow = this.checkRow(arr)
+		let thisCheckColumn = this.checkColumn(arr)
+		let thisCheckDiagonal = this.checkDiagonal(arr)
+		if (thisCheckRow !== Map.available) {
+			return thisCheckRow
+		} else if (thisCheckColumn !== Map.available) {
+			return thisCheckColumn
+		} else if (thisCheckDiagonal !== Map.available) {
+			return thisCheckDiagonal
 		} else {
 			for (let i = 0; i < 9; i++) {
 				if (arr[i] === Map.available) {
@@ -236,13 +236,12 @@ export default class Map {
 			return thisWinCheck
 		}
 		//locationCheck
-		if (this.checkLocation(block, item) === true && this.playerCheck(status) === true && this.playCheck(block, item) === true) {
-			this.updateStatus(block, item, status)
-			return true
+		if (this.checkLocation(block, item) === false || this.playerCheck(status) === false || this.playCheck(block, item) === false) {
+			return false
 		}
 		// console.log('Block: ' + block + ' item: ' + item + ' itemStatus:' + status + ', next active Block is ' + this.getActiveBlock())
-
-		return false
+		this.updateStatus(block, item, status)
+		return true
 	}
 
 
