@@ -15,9 +15,9 @@ describe('Map', () => {
 			assert.equal(map.getActiveBlock(), -1)
 			for(let i = 0; i < 9; i++) {
 				for(let j = 0; j < 9; j++) {
-					assert.equal(map.getItemStatus(i, j), Map.empty)
+					assert.equal(map.getItemStatus(i, j), Map.available)
 				}
-				assert.equal(map.getBlockStatus(i), Map.empty)
+				assert.equal(map.getBlockStatus(i), Map.available)
 			}
 
 		})
@@ -48,9 +48,9 @@ describe('Map', () => {
 			assert.equal(map.isItemAvailable(5, 5), false)
 		})
 
-		it('should get return true when item is empty', () => {
+		it('should get return true when item is available', () => {
 			let map = new Map()
-			map.setItemStatus(5, 5, Map.empty)
+			map.setItemStatus(5, 5, Map.available)
 			assert.equal(map.isItemAvailable(5, 5), true)
 		})
 	})
@@ -59,7 +59,7 @@ describe('Map', () => {
 		it('should return true when play a correct location', () => {
 			let map = new Map()
 			map.play(4, 2, Map.tic)
-			assert.equal(map.getItemStatus(4, 2), Map.tac)
+			assert.equal(map.getItemStatus(4, 2), Map.tic)
 			assert.equal(map.play(2, 5, Map.tac), true)
 		})
 
@@ -98,7 +98,7 @@ describe('Map', () => {
 	describe('check', () => {
 		it('should return NotFinished when game is not finished', () => {
 			let map = new Map()
-			assert.equal(map.check(), Map.notFinished)
+			assert.equal(map.check(), Map.available)
 		})
 
 		it('should return Draw when draw', () => {
@@ -155,12 +155,12 @@ describe('Map', () => {
 			assert.equal(map.checkBlock(0), Map.tic)
 		})
 
-		it('should return Empty when 3 item in one diagonal setted to Tic and Tac', () => {
+		it('should return available when 3 item in one diagonal setted to Tic and Tac', () => {
 			let map = new Map()
 			map.setItemStatus(0, 2, Map.tic)
 			map.setItemStatus(0, 4, Map.tac)
 			map.setItemStatus(0, 6, Map.tic)
-			assert.equal(map.checkBlock(0), Map.empty)
+			assert.equal(map.checkBlock(0), Map.available)
 		})
 
 		it('should return Draw for a specific condition', () => {
@@ -172,13 +172,13 @@ describe('Map', () => {
 			assert.equal(map.checkBlock(0), Map.draw)
 		})
 
-		it('should return Empty for a specific condition', () => {
+		it('should return available for a specific condition', () => {
 			let map = new Map()
-			let arr = [Map.tic, Map.tac, Map.tic, Map.tac, Map.tac, Map.tic, Map.tic, Map.tic, Map.empty]
+			let arr = [Map.tic, Map.tac, Map.tic, Map.tac, Map.tac, Map.tic, Map.tic, Map.tic, Map.available]
 			for(let i = 0; i < 9; i++) {
 				map.setItemStatus(0, i, arr[i])
 			}
-			assert.equal(map.checkBlock(0), Map.empty)
+			assert.equal(map.checkBlock(0), Map.available)
 		})
 	})
 
@@ -190,7 +190,7 @@ describe('Map', () => {
 
 		it('should return 0 after play (0,0)', () => {
 			let map = new Map()
-			map.play(0, 0, Map.tac)
+			map.play(0, 0, Map.tic)
 			assert.equal(map.getActiveBlock(), 0)
 		})
 
