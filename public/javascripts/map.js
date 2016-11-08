@@ -251,5 +251,5 @@ export default class Map {
 	}
 }
 
-var module = module || {}
-if (module) { module.exports = Map }
+let window = window || {}
+if (!window) { }

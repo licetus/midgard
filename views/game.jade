@@ -1,3 +1,6 @@
 extends layout
 block content
-    script(src="/javascripts/map.js")
+	link(rel='stylesheet', href='/stylesheets/game.css')
+	canvas(id="mapCanvas")
+	script(src="/javascripts/map.js")
+	script(src="/javascripts/tictac.js")

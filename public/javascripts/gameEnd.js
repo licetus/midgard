@@ -1,3 +1,0 @@
-var gameEnd = function() {
-
-}
