@@ -2,40 +2,5 @@ body {
     padding: 0 50px;
 	height: 1000px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-    font-size: 30px;
-    font-weight: bold;
-}
-
-ul {
-    list-style-type: none;
-    margin: 0 auto;
-    width: 1280px;
-    padding: 0;
-    overflow: hidden;
-}
-
-li {
-    float: left;
-}
-
-a:link, a:visited {
-    display: block;
-    text-decoration: none;
-    width: 300px;
-    background-color: #AAAAAA;
-    color: #FFFFFF;
-    text-align: center;
-    padding: 10px;
-    text-transform: uppercase;
-}
-
-a:hover, a:active {
-    background-color: #66CCFF;
-}
-
-li>a.active {
-    background-color: #66CCFF;
+	background-color: gray;
 }

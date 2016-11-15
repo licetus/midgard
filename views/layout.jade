@@ -1,17 +1,7 @@
 doctype html
 html
-    head
-        title= title
-        link(rel='stylesheet', href='/stylesheets/style.css')
-    body
-        ul(id='nav')
-            li 
-                a(href="/" class=(title=='index' ? 'active' : '')) index
-            li 
-                a(href="/game" class=(title=='game' ? 'active' : '')) game
-            li 
-                a(href="/download" class=(title=='download' ? 'active' : '')) download
-            li 
-                a(href="/about" class=(title=='about' ? 'active' : '')) about
-                
-    block content
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		block content
