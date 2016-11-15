@@ -250,6 +250,3 @@ export default class Map {
 
 	}
 }
-
-let window = window || {}
-if (!window) { }

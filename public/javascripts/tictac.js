@@ -1,32 +1,47 @@
-
+import Map from './map'
+const game = new Map()
 const mapCanvas = document.getElementById('mapCanvas')
 const ctx = mapCanvas.getContext('2d')
-const tic = 1
-const tac = 4
-const draw = 16
 let current = false
 let mapSize = 750
+let mapColor = '#66CCFF'
+let ticColor = '#66CCFF'
+let tacColor = '#66CCFF'
+let drawColor = '#66CCFF'
+let itemSize = mapSize / 9
+let blockSize = mapSize / 3
+let inactiveColor = '#AAAAAA'
+let inactiveBlur = 0.5
 
 mapCanvas.width = mapSize
 mapCanvas.height = mapSize
 
-
-
 mapCanvas.addEventListener('click', e => {
-	const size = mapSize / 9
-	const color = '66CCFF'
-	const {x, y} = getMapPosition({x: e.offsetX, y: e.offsetY})
+	const {block, item} = corrdinateToPosition(e.offsetX, e.offsetY)
+	//const {x, y} = getMapPosition({x: e.offsetX, y: e.offsetY})
 	if (current) {
-		drawItem(x, y, size, color, tic)
+		playTicAnimation(block, item)
 	} else {
-		drawItem(x, y, size, color, tac)
+		playTacAnimation(block, item)
 	}
 	current = !current
 })
 
-const getMapPosition = ({x, y}) => {
+
+const corrdinateToPosition = (x, y) => {
 	const length = mapSize / 9
-	return {x: Math.floor(x / length) * length, y: Math.floor(y / length) * length}
+	const mapX = Math.floor(x / length)
+	const mapY = Math.floor(y / length)
+	let block = Math.floor(mapX / 3) + Math.floor(mapY / 3) * 3
+	let item = (mapX % 3) + (mapY % 3) * 3
+	return {block, item}
+}
+
+const positionToCorrdinate = (block, item) => {
+	const length = mapSize / 9
+	const posX = (block % 3) * 3 + (item % 3)
+	const posY = Math.floor(block / 3) * 3 + Math.floor(item / 3)
+	return {x: posX * length, y: posY * length}
 }
 
 const drawBox = (x, y, boxSize, lineSpace, lineWidth, lineColor) => {
@@ -48,7 +63,7 @@ const drawBox = (x, y, boxSize, lineSpace, lineWidth, lineColor) => {
 const drawMap = (mapSize) => {
 	const mapSpace = mapSize * 0.02
 	const boxLineWidth = mapSize / 75
-	drawBox(0, 0, mapSize, mapSpace, boxLineWidth, '#66CCFF')
+	drawBox(0, 0, mapSize, mapSpace, boxLineWidth, mapColor)
 	const blockSize = mapSize / 3
 	const blockLineWidth = boxLineWidth / 2
 	for (let i = 0; i < 3; i++) {
@@ -59,6 +74,60 @@ const drawMap = (mapSize) => {
 }
 
 const drawTic = (x, y, size, color) => {
+	const ticSpace = size * 0.2
+	const width = size / 8
+	ctx.beginPath()
+	ctx.moveTo(x + ticSpace, y + ticSpace)
+	ctx.lineTo(x + size - ticSpace, y + size - ticSpace)
+	ctx.moveTo(x + size - ticSpace, y + ticSpace)
+	ctx.lineTo(x + ticSpace, y + size - ticSpace)
+	ctx.strokeStyle = color
+	ctx.lineWidth = width
+	ctx.lineCap = 'butt'
+	ctx.globalAlpha = 1
+	ctx.closePath()
+}
+
+const drawTac = (x, y, size, color) => {
+	const tacSpace = size * 0.2
+	const width = size / 8
+	const tacR = (size - 2 * tacSpace) / 2
+	const tacX = x + size / 2
+	const tacY = y + size / 2
+	ctx.beginPath()
+	ctx.arc(tacX, tacY, tacR, Math.PI, 3 * Math.PI)
+	ctx.strokeStyle = color
+	ctx.lineWidth = width
+	ctx.globalAlpha = 1
+	ctx.closePath()
+}
+
+const drawDraw = (x, y, size, color) => {
+	const drawSpace = size * 0.1
+	const width = size / 8
+	const drawX = x + drawSpace
+	const drawY = y + size / 2
+	const maxX = x + size - drawSpace
+	ctx.beginPath()
+	ctx.moveTo(drawX, drawY)
+	ctx.lineTo(maxX, drawY)
+	ctx.strokeStyle = color
+	ctx.lineWidth = width
+	ctx.lineCap = 'butt'
+	ctx.globalAlpha = 1
+	ctx.closePath()
+}
+
+const drawInactive = (x, y, size, color, blur) => {
+	const drawSpace = mapSize / 150
+	ctx.beginPath()
+	ctx.fillStyle = color
+	ctx.globalAlpha = blur
+	ctx.fillRect(x + drawSpace, y + drawSpace, size - 2 * drawSpace, size - 2 * drawSpace)
+	ctx.closePath()
+}
+
+const drawTicAnimation = (x, y, size, color) => {
 	const step = size / 50
 	const ticSpace = size * 0.2
 	const width = size / 8
@@ -86,6 +155,7 @@ const drawTic = (x, y, size, color) => {
 			ctx.strokeStyle = color
 			ctx.lineWidth = width
 			ctx.lineCap = 'butt'
+			ctx.globalAlpha = 1
 			ctx.closePath()
 			ctx.stroke()
 			//console.log('x1: ', ticX1, ' y1: ', ticY1)
@@ -116,7 +186,7 @@ const drawTic = (x, y, size, color) => {
 	draw()
 }
 
-const drawTac = (x, y, size, color) => {
+const drawTacAnimation = (x, y, size, color) => {
 	const step = 0.1
 	const tacSpace = size * 0.2
 	const width = size / 8
@@ -131,6 +201,7 @@ const drawTac = (x, y, size, color) => {
 			ctx.arc(tacX, tacY, tacR, startAngle, startAngle += step)
 			ctx.strokeStyle = color
 			ctx.lineWidth = width
+			ctx.globalAlpha = 1
 			ctx.closePath()
 			ctx.stroke()
 			requestAnimationFrame(draw)
@@ -139,7 +210,7 @@ const drawTac = (x, y, size, color) => {
 	draw()
 }
 
-const drawDraw = (x, y, size, color) => {
+const drawDrawAnimation = (x, y, size, color) => {
 	const step = size / 75
 	const drawSpace = size * 0.1
 	const width = size / 8
@@ -153,6 +224,8 @@ const drawDraw = (x, y, size, color) => {
 			ctx.lineTo(drawX += step, drawY)
 			ctx.strokeStyle = color
 			ctx.lineWidth = width
+			ctx.lineCap = 'butt'
+			ctx.globalAlpha = 1
 			ctx.closePath()
 			ctx.stroke()
 			console.log('x: ', drawX, ' y: ', drawY)
@@ -162,15 +235,33 @@ const drawDraw = (x, y, size, color) => {
 	draw()
 }
 
-const drawItem = (x, y, size, color, item) => {
-	if (item === tic) {
-		drawTic(x, y, size, color)
-	} else if (item === tac) {
-		drawTac(x, y, size, color)
-	} else if (item === draw) {
-		drawDraw(x, y, size, color)
-	}
+const drawInactiveAnimation = (x, y, size, color, blur) => {
+
+}
+
+const playTicAnimation = (block, item) => {
+	const {x, y} = positionToCorrdinate(block, item)
+	drawTicAnimation(x, y, itemSize, ticColor)
+}
+
+const playTacAnimation = (block, item) => {
+	const {x, y} = positionToCorrdinate(block, item)
+	drawTacAnimation(x, y, itemSize, tacColor)
+}
+
+const playDrawAnimation = (block) => {
+	const {x, y} = positionToCorrdinate(block, 0)
+	drawDrawAnimation(x, y, blockSize, drawColor)
+}
+
+const playInactive = (block) => {
+	const {x, y} = positionToCorrdinate(block, 0)
+	drawInactive(x, y, blockSize, inactiveColor, inactiveBlur)
 }
 
 
+
 drawMap(mapSize)
+game.setItemStatus(4, 4, tac)
+console.log(game.getItemStatus(4, 4))
+drawInactive(250, 250, 250, '#AAAAAA', 0.5)
