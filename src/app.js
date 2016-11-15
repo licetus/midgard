@@ -1,6 +1,6 @@
 import Map from './map.js'
 import React from 'react'
-import { Router, Route, Link, browserHistory } from 'react-router'
+import { IndexRoute, Router, Route, Link, browserHistory } from 'react-router'
 import Header from './components/Header/Header.js'
 import ReactDOM from 'react-dom'
 import App from './routes/app.js'
@@ -15,7 +15,7 @@ import { Button } from 'antd'
 ReactDOM.render((
 	<Router history={browserHistory}>
 		<Route path="/" component={App}>
-			<Route path="index" component={Index}/>
+			<IndexRoute component={Index}/>
 			<Route path="game" component={Game}/>
 			<Route path="download" component={Download}/>
 			<Route path="about" component={About}/>

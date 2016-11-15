@@ -1,4 +1,5 @@
 import { Menu, Icon, Row, Col } from 'antd'
+import { Link } from 'react-router'
 import withStyles from 'isomorphic-style-loader/lib/withStyles'
 import React from 'react'
 import './Header.css'
@@ -26,16 +27,16 @@ class Header extends React.Component {
 				<Row>
 					<Menu onClick = {this.handleClick} selectedKeys = {[this.state.current]} mode = 'horizontal' >
 						<Menu.Item key = 'home'>
-							<Icon type = 'home' /> Home
+							<Icon type = 'home' /> <Link className='menu-link' to='/index'>Home</Link>
 						</Menu.Item>
 						<Menu.Item key = 'game' >
-							<Icon type = 'android' /> Game
+							<Icon type = 'android' /> <Link className='menu-link' to='/game'>Game</Link>
 						</Menu.Item>
 						<Menu.Item key = 'download' >
-							<Icon type = 'download' /> Download
+							<Icon type = 'download' /> <Link className='menu-link' to='/download'>Download</Link>
 						</Menu.Item>
 						<Menu.Item key = 'about' >
-							<Icon type = 'solution' /> About
+							<Icon type = 'solution' /> <Link className='menu-link' to='/about'>About</Link>
 						</Menu.Item>
 					</Menu>
 				</Row>

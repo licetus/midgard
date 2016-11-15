@@ -2,3 +2,7 @@
 	margin-top: 10px;
 	height: 70px;
 }
+
+.ant-menu-item > a.menu-link {
+	display: inline
+}

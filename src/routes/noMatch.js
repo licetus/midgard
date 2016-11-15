@@ -10,4 +10,4 @@ class NoMatch extends React.Component {
 	}
 }
 
-export default Index
+export default NoMatch
