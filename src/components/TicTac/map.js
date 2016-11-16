@@ -50,7 +50,6 @@ export default class Map {
 		this.currentPlayer = currentPlayer
 	}
 
-
 	// returns a bool value if given location is available
 	isItemAvailable(block, item) {
 		return this.getItemStatus(block, item) === Map.available ? true : false
@@ -72,7 +71,6 @@ export default class Map {
 		}
 		return false //error code : 300 location is not available
 	}
-
 
 	count(count) {
 		if (count === Map.tic * 3) {
@@ -223,16 +221,12 @@ export default class Map {
 		this.changeSteps(status)
 	}
 
-	gameOver(winner) {
-		console.log(winner)
-	}
 
 	// call this to play a step, will call setItemStatus in this method and set other game state.
 	play(block, item, status) {
 		//winCheck
 		let thisWinCheck = this.winCheck()
 		if (thisWinCheck !== Map.playing) {
-			this.gameOver(thisWinCheck)
 			return thisWinCheck
 		}
 		//locationCheck
@@ -240,13 +234,8 @@ export default class Map {
 			return false
 		}
 		// console.log('Block: ' + block + ' item: ' + item + ' itemStatus:' + status + ', next active Block is ' + this.getActiveBlock())
-		this.updateStatus(block, item, status)
 		return true
 	}
 
 
-	// render chess this.map
-	render() {
-
-	}
 }

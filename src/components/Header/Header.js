@@ -1,6 +1,5 @@
 import { Menu, Icon, Row, Col } from 'antd'
 import { Link } from 'react-router'
-import withStyles from 'isomorphic-style-loader/lib/withStyles'
 import React from 'react'
 import './Header.css'
 
